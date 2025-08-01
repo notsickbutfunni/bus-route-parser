@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+ENV/
+venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VSCode / PyCharm config
+.vscode/
+.idea/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs and debug
+*.log
+
+# Local environment variables or config
+.env
+
+# PostgreSQL dumps or credentials (если есть)
+*.sql
+*.dump
+
+# Large or generated data
+*.csv
+*.json
+
+# Можешь разрешить только нужный JSON (например с маршрутом)
+!routes_test.json
