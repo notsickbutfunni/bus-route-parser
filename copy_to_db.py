@@ -4,14 +4,14 @@ import re
 
 conn = psycopg2.connect(
     dbname="bus_routes",
-    user="postgres",
-    password="root",
-    host="localhost",
-    port="5432"
+    user="your_username",
+    password="your_passwd",
+    host="your_host",
+    port="your_port"
 )
 cursor = conn.cursor()
 
-with open("routes_test.json", "r", encoding="utf-8") as f:
+with open("your_json.json", "r", encoding="utf-8") as f:
     routes_data = json.load(f)
 
 
@@ -126,6 +126,9 @@ for route in routes_data:
                 validity_id,
                 times_str
             ))
+        
+        # coordinates
+        
 
         
     except Exception as e:

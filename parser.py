@@ -136,6 +136,37 @@ def get_schedule(soup):
     
     return schedule_data
 
+def get_coordinates(driver):
+    script = """
+    let allCoords = [];
+    for (let k in window) {
+        try {
+            let obj = window[k];
+            if (obj && typeof obj === 'object' && obj._layers) {
+                for (let id in obj._layers) {
+                    let layer = obj._layers[id];
+                    if (layer && layer._latlngs) {
+                        if (Array.isArray(layer._latlngs[0])) {
+                            for (let group of layer._latlngs) {
+                                for (let point of group) {
+                                    allCoords.push([point.lat, point.lng]);
+                                }
+                            }
+                        } else {
+                            for (let point of layer._latlngs) {
+                                allCoords.push([point.lat, point.lng]);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e) {}
+    }
+    return allCoords;
+    """
+    return driver.execute_script(script)
+
+
 
 def parse_route_page(driver, url):
     driver.get(url)
@@ -163,35 +194,20 @@ def parse_route_page(driver, url):
     directions = get_directions(soup)
     comments = get_comments(soup)
     schedule = get_schedule(soup)
+    raw_coordinates = get_coordinates(driver)
+    coordinates = [
+        {"lat": lat, "lon": lon}
+        for i, (lat, lon) in enumerate(raw_coordinates)
+    ]
 
     return {
         "url": url,
         "route_info": route_info,
         "directions": directions,
         "comments": comments,
-        "schedule": schedule
+        "schedule": schedule,
+        "coordinates": coordinates
     }
-
-
-# чтобы конвертировать в ссвшку
-def flatten_route_data(route):
-    flat = {}
-    flat["url"] = route["url"]
-
-    for key, value in route.get("route_info", {}).items():
-        flat[f"route_info_{key}"] = value
-
-    directions = route.get("directions", [])
-    flat["directions"] = " || ".join([" → ".join(direction) for direction in directions]) if directions else ""
-
-    comments = route.get("comments", [])
-    flat["comments"] = " || ".join([f'{c["username"]}: {c["comment_text"]} ({c["date_time"]})' for c in comments]) if comments else ""
-
-    schedule = route.get("schedule", [])
-    flat["schedule"] = " || ".join([f'{s["day_type"]} [{s["validity"]}]: {", ".join(s["times"])}' for s in schedule]) if schedule else ""
-
-    return flat
-
 
 
 def main(driver):
@@ -212,16 +228,7 @@ def main(driver):
 
     with open("routes_test.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    
-    
-    # flattened_data = [flatten_route_data(r) for r in data]
 
-    # df = pd.DataFrame(flattened_data)
-    # df.to_csv("almaty_routes.csv", index=False, encoding="utf-8-sig")
-    
-    # print("Готово: almaty_routes.csv")
-    
-    # print(flattened_data)
 
 if __name__ == "__main__":
     driver = webdriver.Chrome()

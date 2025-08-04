@@ -34,5 +34,6 @@ Thumbs.db
 *.csv
 *.json
 
-# Можешь разрешить только нужный JSON (например с маршрутом)
-!routes_test.json
+# json cuz it's too large
+.routes_test.json
+
