@@ -128,6 +128,8 @@ for route in routes_data:
             ))
         
         # coordinates
+        coordinates = route.get('coordinates')
+        
         
 
         

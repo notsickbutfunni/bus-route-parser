@@ -4,7 +4,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 import json, time
-import pandas as pd
 
 BASE_URL = "https://wikiroutes.info"
 CATALOG_URL = BASE_URL + "/almaty/catalog"
@@ -197,7 +196,7 @@ def parse_route_page(driver, url):
     raw_coordinates = get_coordinates(driver)
     coordinates = [
         {"lat": lat, "lon": lon}
-        for i, (lat, lon) in enumerate(raw_coordinates)
+        for (lat, lon) in enumerate(raw_coordinates)
     ]
 
     return {
